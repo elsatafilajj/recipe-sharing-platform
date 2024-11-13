@@ -1,6 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
+//This component provides the main navigation bar for the application.
+//The navigation bar includes links to Home, Recipes, Favorites, About Us, and Share Recipe pages.
+ //Accessibility is enhanced by specifying aria-labels for assistive technologies.
+
 const Navbar: React.FC = () => {
 
   return (
@@ -10,7 +14,7 @@ const Navbar: React.FC = () => {
     >
       <NavLink to="/" className="flex items-center">
         <img
-          src="./src/assets/loggo.png"
+          src="/assets/loggo.png"
           alt="Logo"
           className="h-10 w-auto"
         />

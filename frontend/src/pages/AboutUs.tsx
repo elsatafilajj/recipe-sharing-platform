@@ -1,11 +1,12 @@
 import React from 'react';
 import useSWR from 'swr';
 
+// The fetcher function that SWR will use to fetch data from the API
 const fetcher = (url: string) => fetch(`http://localhost:5000${url}`).then((res) => res.json());
 
 
 const AboutUs: React.FC = () => {
-  // Fetch users with SWR
+ //fetch users from the backend
   const { data: users, error } = useSWR('/api/users', fetcher);
 
 
@@ -14,7 +15,7 @@ const AboutUs: React.FC = () => {
       <div
         className="relative w-full h-96 bg-cover bg-center"
         style={{
-          backgroundImage: 'url(src/assets/about.us.jpg)',
+          backgroundImage: 'url(/assets/about.us.jpg)',
         }}
       >
         <div className="absolute inset-0 bg-black opacity-50"></div> 
@@ -33,10 +34,11 @@ const AboutUs: React.FC = () => {
         </p>
       </div>
 
+      {/* Cards with different aspects of cooking */}
       <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <img
-            src="src/assets/img1.jpg" 
+            src="/assets/img1.jpg" 
             alt="Cooking together"
             className="w-full h-64 object-cover"
           />
@@ -47,10 +49,9 @@ const AboutUs: React.FC = () => {
             </p>
           </div>
         </div>
-
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <img
-            src="src/assets/img2.jpg" 
+            src="/assets/img2.jpg" 
             alt="Delicious dishes"
             className="w-full h-64 object-cover"
           />
@@ -61,10 +62,9 @@ const AboutUs: React.FC = () => {
             </p>
           </div>
         </div>
-
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <img
-            src="src/assets/img3.jpg" 
+            src="/assets/img3.jpg" 
             alt="Fresh Ingredients"
             className="w-full h-64 object-cover"
           />
@@ -77,6 +77,7 @@ const AboutUs: React.FC = () => {
         </div>
       </div>
 
+      {/* the youtube link section */}
       <div className="mt-12 text-center">
         <h2 className="text-2xl font-bold text-gray-400 mb-4">Want to Learn More ?</h2>
         <p className="text-gray-600 mb-6">Subscribe to our YouTube channel for detailed recipes and more cooking inspiration!</p>
@@ -89,6 +90,7 @@ const AboutUs: React.FC = () => {
           Visit Our YouTube Channel
         </a>
       </div>
+
 
       {/* Fetch and Display Users */}
       <div className="mt-16 text-center">

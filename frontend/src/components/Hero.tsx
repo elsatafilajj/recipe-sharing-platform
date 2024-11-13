@@ -13,7 +13,7 @@ const Hero: React.FC = () => {
     <header
       className="bg-gradient-to-r from-[#e7995a] to-[#F1C9A6] text-gray-800 py-48 px-4 text-center relative"  // Increased padding
       style={{
-        backgroundImage: 'url(/src/assets/bck.jpg)',  
+        backgroundImage: 'url(/assets/bck.jpg)',  
         backgroundSize: 'cover', 
         backgroundPosition: 'center center', 
         backgroundAttachment: 'fixed', 
