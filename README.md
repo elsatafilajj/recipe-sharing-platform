@@ -67,47 +67,48 @@ Create a .env file in the backend folder with the following variables:
 - DATABASE_URL=your_database_connection_string
 - PORT=5000
 
--CLOUD_NAME, API_KEY, and API_SECRET are from Cloudinary.
--DATABASE_URL is the NeonDB PostgreSQL connection string.
 
 ## **Run the Server**
-npx ts-node src/index.ts
-The backend will be running at http://localhost:5000.
+- npx ts-node src/index.ts
+- The backend will be running at http://localhost:5000.
 
 
 ## **Frontend Setup**
 
-cd ../frontend
-npm install
-npm run dev
+- cd ../frontend
+- npm install
+- npm run dev
 
-The frontend will be running at http://localhost:5173.
-
+- The frontend will be running at http://localhost:5173.
 
 ## **Cloudinary Image Upload Logic**
 
-- Setup Cloudinary
+- **Setup Cloudinary**
 
-- cloudinary.config({
-- cloud_name: process.env.CLOUD_NAME,
-- api_key: process.env.API_KEY,
-- api_secret: process.env.API_SECRET,
-});
+```typescript
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+}); 
+```
 
 ## **Upload Image Function**
 
-- The uploadImage function uploads images to Cloudinary and returns the image URL.
+The `uploadImage` function uploads images to Cloudinary and returns the image URL.
 
-- const uploadImage = async (filePath: string) => {
--  return new Promise((resolve, reject) => {
--    cloudinary.uploader.upload(filePath, (error, result) => {
+```typescript
+const uploadImage = async (filePath: string) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.upload(filePath, (error, result) => {
       if (error) reject(error);
       else resolve(result.secure_url);
     });
   });
 };
+```
 
-- Using Image URLs
+*Using Image URLs*
 
 - The URLs returned from Cloudinary are stored in the database and linked to recipes.
 
@@ -117,56 +118,58 @@ The frontend will be running at http://localhost:5173.
 
 - Recipe Content Factory
 
-- interface RecipeContent {
--  createRecipeContent(): string;
--}
+```typescript
+interface RecipeContent {
+createRecipeContent(): string;
+}
 
-- class TextOnlyRecipe implements RecipeContent {
-- createRecipeContent() {
--    return 'This is a text-only recipe.';
+class TextOnlyRecipe implements RecipeContent {
+createRecipeContent() {
+    return 'This is a text-only recipe.';
   }
 }
 
-- class RecipeWithImage implements RecipeContent {
--  createRecipeContent() {
--    return 'This recipe includes an image.';
+ class RecipeWithImage implements RecipeContent {
+  createRecipeContent() {
+    return 'This recipe includes an image.';
   }
 }
 
-- class RecipeFactory {
--  static createRecipe(type: string): RecipeContent {
--    if (type === 'text') return new TextOnlyRecipe();
--    else if (type === 'image') return new RecipeWithImage();
--    else throw new Error('Invalid recipe type');
+ class RecipeFactory {
+  static createRecipe(type: string): RecipeContent {
+   if (type === 'text') return new TextOnlyRecipe();
+    else if (type === 'image') return new RecipeWithImage();
+    else throw new Error('Invalid recipe type');
   }
 }
-
+```
 
 ## **API Endpoints Overview**
 
 ## *Recipe Management*
 
-- Create Recipe: **POST** /recipes
-- Requires title, content, type, and userId. Optionally accepts image (file) or imageUrl.
-- Supports image uploads to Cloudinary and saves the recipe data in the database.
+- Create Recipe: **POST** /recipes  
+  Requires title, content, type, and userId. Optionally accepts image (file) or imageUrl.  
+  Supports image uploads to Cloudinary and saves the recipe data in the database.  
 
-- Fetch All Recipes: **GET**/recipes
-- Accepts query parameters like title, type, and difficulty to filter results.
+- Fetch All Recipes: **GET**/recipes  
+  Accepts query parameters like title, type, and difficulty to filter results.  
 
-- Fetch Recipe by ID: **GET** /recipes/:id
-- Retrieves a single recipe by its id.
+- Fetch Recipe by ID: **GET** /recipes/:id  
+  Retrieves a single recipe by its id.  
 
 ## *Favorites Management*
 
-- Add Favorite: **POST** /:id/favorite
-- Adds a recipe to the user's favorites list.
-- Remove Favorite: **DELETE** /:id/favorite
-- Removes a recipe from the user's favorites list.
+- Add Favorite: **POST** /:id/favorite  
+  Adds a recipe to the user's favorites list.
+- Remove Favorite: **DELETE** /:id/favorite  
+  Removes a recipe from the user's favorites list.
 
 ## *User Management*
 
-- Fetch All Users: **GET** /users
-- Fetches a list of all users with their id, name, and email.
+- Fetch All Users: **GET** /users  
+  Fetches a list of all users with their id, name, and email.
+  
 
 ## *Bulk Image Upload*
 Upload Images from Folder: Automated function
