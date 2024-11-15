@@ -182,8 +182,9 @@ Uploads all images from a local folder to Cloudinary.
 <img width="943" alt="{AA7EF33E-9B5F-49D2-BF63-102F1ED8DA85}" src="https://github.com/user-attachments/assets/b930cb43-3832-42c6-8006-6eb14addde94">
 
 
-*Recipe Page*
-<img width="938" alt="{AE3F94AF-2108-44C5-87DC-8EA9B0057063}" src="https://github.com/user-attachments/assets/eedffb14-a606-4288-b9af-b50f98f6d195">
+*Recipes Page*
+<img width="942" alt="{56497FF8-AF25-4C37-8017-A0235EBBEB3F}" src="https://github.com/user-attachments/assets/206ec6d5-b103-4221-b4dc-a30c144b3921">
+<img width="954" alt="{D46D54A5-2289-4FBB-955D-0650D00410A5}" src="https://github.com/user-attachments/assets/273a233c-21d3-43d9-8ce0-3dea94464520">
 
 
 *Favorites Page*
