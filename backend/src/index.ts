@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors'; 
 import dotenv from 'dotenv'; 
 import { PrismaClient } from '@prisma/client'; 
-import recipeRoutes from './routes/recipeRoutes'; 
+import recipeRoutes from '../src/routes/recipeRoutes'; 
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async (req: VercelRequest, res: VercelResponse) => {

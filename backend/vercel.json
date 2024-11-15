@@ -1,14 +1,15 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "backend/src/index.ts",
-        "use": "@vercel/node"
-      }
-    ],
-    "env": {
-      "DATABASE_URL": "postgresql://neondb_owner:KJ1A6FQrzeMq@ep-lingering-frost-a2aq1os6-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require",
-      "CLOUDINARY_URL": "cloudinary://959793611595824:rzwVfDFg4h48Nb60L2dvULVB8zc@dtuq9qcvc"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.ts",
+      "use": "@vercel/node"
     }
-  }
-  
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/index.ts"
+    }
+  ]
+}
