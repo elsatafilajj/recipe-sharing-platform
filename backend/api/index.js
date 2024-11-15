@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const client_1 = require("@prisma/client");
-const recipeRoutes_1 = __importDefault(require("./routes/recipeRoutes"));
+const recipeRoutes_1 = __importDefault(require("../dist/routes/recipeRoutes"));
 dotenv_1.default.config(); // loading environment variables from .env file
 const app = (0, express_1.default)(); // initializing Express application
 const prisma = new client_1.PrismaClient(); // creating a Prisma Client instance to interact with the database

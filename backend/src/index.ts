@@ -3,6 +3,15 @@ import cors from 'cors';
 import dotenv from 'dotenv'; 
 import { PrismaClient } from '@prisma/client'; 
 import recipeRoutes from './routes/recipeRoutes'; 
+import { VercelRequest, VercelResponse } from '@vercel/node';
+
+export default async (req: VercelRequest, res: VercelResponse) => {
+  if (req.method === 'GET') {
+    res.status(200).json({ message: 'Hello from the API!' });
+  } else {
+    res.status(405).send({ message: 'Method Not Allowed' });
+  }
+};
 
 dotenv.config(); // loading environment variables from .env file
 const app = express(); // initializing Express application
