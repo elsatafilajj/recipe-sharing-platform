@@ -10,12 +10,12 @@
     }
   ],
   "hooks": {
-    "build": "npx prisma generate"
+    "build": "npm run build"
   },
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/index.ts"
+      "dest": "/api/index.ts"
     }
   ],
   "env": {
