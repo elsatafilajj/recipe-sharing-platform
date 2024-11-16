@@ -15,13 +15,25 @@ const prisma = new PrismaClient();
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173', // Development frontend
+  process.env.FRONTEND_URL || 'https://recipe-sharing-platform-one.vercel.app', // Production frontend
+];
+
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Replace with your frontend URL
-    methods: ['GET', 'POST', 'DELETE'],
-    credentials: true,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
+      }
+    },
+    methods: ['GET', 'POST', 'DELETE'], // Add other methods as needed
+    credentials: true, // Allow credentials (e.g., cookies, authorization headers)
   })
 );
+
 app.use(express.json());
 
 // API Routes
