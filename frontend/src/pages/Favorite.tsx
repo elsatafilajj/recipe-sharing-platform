@@ -11,38 +11,41 @@ interface Recipe {
   difficulty: string;
 }
 
+// Fetcher function to handle API requests
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Favorite: React.FC = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
-  
-  // Using SWR for fetching recipes
-  const { data: recipes, error } = useSWR<Recipe[]>('http://localhost:5000/api/recipes', fetcher);
+
+  // Use environment variable for API URL
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';  // Default to local URL if not set
+  const { data: recipes, error } = useSWR<Recipe[]>(`${apiUrl}/recipes`, fetcher);
 
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavorites(savedFavorites);
   }, []);
 
+  // Function to remove a recipe from the list of favorites
   const removeFavorite = async (recipeId: number) => {
     const updatedFavorites = favorites.filter(id => id !== recipeId);
     setFavorites(updatedFavorites);
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-  
+
     try {
-      await fetch(`http://localhost:5000/api/recipes/${recipeId}/favorite`, {
+      await fetch(`${apiUrl}/recipes/${recipeId}/favorite`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId: 1 }), // Replace 1 with the actual user ID if you have it
+        body: JSON.stringify({ userId: 1 }),
       });
     } catch (error) {
       console.error('Error removing favorite:', error);
     }
   };
-  
 
+  // Filter the recipes to only include those in the favorites list
   const favoriteRecipes = recipes?.filter(recipe => favorites.includes(recipe.id)) || [];
 
   if (error) return <div>Error fetching recipes.</div>;
