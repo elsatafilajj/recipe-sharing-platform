@@ -7,7 +7,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Home: React.FC = () => {
   const { data: recipes, error, isLoading } = useSWR(
-    'http://localhost:5000/api/recipes',
+    `${import.meta.env.VITE_API_URL}/recipes`, // Using environment variable for the base URL
     fetcher
   );
 
@@ -15,13 +15,13 @@ const Home: React.FC = () => {
 
   // Autoplay effect with setInterval
   useEffect(() => {
-    if (!recipes || recipes.length === 0) return; // Guard clause if no recipes
+    if (!recipes || recipes.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % recipes.length);
-    }, 3000); // Change slide every 3 seconds
+    }, 3000);
 
-    return () => clearInterval(interval); // Clear interval on unmount or if recipes change
+    return () => clearInterval(interval);
   }, [recipes]);
 
   return (
@@ -46,23 +46,22 @@ const Home: React.FC = () => {
           <div className="flex flex-col items-center">
             <div className="w-full max-w-4xl mx-auto overflow-hidden shadow-lg">
               <img
-                src={recipes[currentIndex].imageUrl || 'fallback-image-url.jpg'}
-                alt={`Recipe ${recipes[currentIndex].id}`}
+                src={recipes[currentIndex]?.imageUrl || '/default-image.jpg'} // Fallback image
+                alt={`Recipe ${recipes[currentIndex]?.id}`}
                 className="w-full h-96 object-cover rounded-lg shadow-md"
-
               />
             </div>
 
             {/* Radix Slider for navigating images */}
             <RadixSlider.Root
-              className="w-full max-w-5xl mt-4" // 5xl sets the slider to around 80rem
+              className="w-full max-w-5xl mt-4"
               min={0}
               max={recipes.length - 1}
               step={1}
               value={[currentIndex]}
               onValueChange={(value) => setCurrentIndex(value[0])}
             >
-              <RadixSlider.Track className="relative h-4 bg-gray-200 rounded-full"              >
+              <RadixSlider.Track className="relative h-4 bg-gray-200 rounded-full">
                 <RadixSlider.Range className="absolute h-full bg-blue-600 rounded-full" />
               </RadixSlider.Track>
               <RadixSlider.Thumb className="w-6 h-6 bg-blue-600 rounded-full" />
