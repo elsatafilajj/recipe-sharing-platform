@@ -18,7 +18,7 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'http://localhost:5173', // Development frontend
-  process.env.FRONTEND_URL || 'https://recipe-sharing-platform-one.vercel.app', // Production frontend
+  process.env.FRONTEND_URL || 'https://recipe-sharing-platform-hazel.vercel.app', // Production frontend
 ];
 
 app.use(
