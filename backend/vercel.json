@@ -1,19 +1,17 @@
 {
-    "version": 2,
     "builds": [
       {
-        "src": "api/index.ts",
-        "use": "@vercel/node",
-        "config": {
-          "includeFiles": ["prisma/**", ".env"]
-        }
+        "src": "backend/package.json",
+        "use": "@vercel/node"
       }
     ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "api/index.ts"
+    "build": {
+      "env": {
+        "DATABASE_URL": "postgresql://neondb_owner:KJ1A6FQrzeMq@ep-lingering-frost-a2aq1os6-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require"
+      },
+      "commands": {
+        "build": "prisma generate"
       }
-    ]
+    }
   }
   
