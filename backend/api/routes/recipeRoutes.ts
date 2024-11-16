@@ -7,7 +7,9 @@ import fs from 'fs';
 
 const router = Router();
 const prisma = new PrismaClient();
-const upload = multer({ dest: 'uploads/' });
+
+// Use memory storage for file uploads
+const upload = multer({ storage: multer.memoryStorage() }).single('image');
 
 interface CreateRecipeRequest {
   title: string;
@@ -19,18 +21,17 @@ interface CreateRecipeRequest {
 }
 
 // Helper function to handle image uploads
-const handleImageUpload = async (filePath: string): Promise<string> => {
+const handleImageUpload = async (fileBuffer: Buffer, fileName: string): Promise<string> => {
   try {
-    const result = await uploadImage(filePath);
-    fs.unlinkSync(filePath); // Clear temp file after upload
-    return result.secure_url;
+    const result = await uploadImage(fileBuffer, fileName); // Upload the image to Cloudinary
+    return result.secure_url; // Return the secure URL of the uploaded image
   } catch (error) {
-    throw new Error("Error uploading image: " + error);
+    throw new Error('Error uploading image: ' + error);
   }
 };
 
 // Route for creating a recipe
-router.post('/recipes', upload.single('image'), async (req: Request<{}, {}, CreateRecipeRequest>, res: Response): Promise<void> => {
+router.post('/recipes', upload, async (req: Request<{}, {}, CreateRecipeRequest>, res: Response): Promise<void> => {
   const { title, content, type, userId, imageUrl: providedImageUrl } = req.body;
 
   if (!title || !content || !userId) {
@@ -39,7 +40,7 @@ router.post('/recipes', upload.single('image'), async (req: Request<{}, {}, Crea
   }
 
   try {
-    const imageUrl = providedImageUrl || (req.file ? await handleImageUpload(req.file.path) : undefined);
+    const imageUrl = providedImageUrl || (req.file ? await handleImageUpload(req.file.buffer, req.file.originalname) : undefined);
     const recipe = RecipeFactory(type, title, content, imageUrl);
 
     const createdRecipe = await prisma.recipe.create({

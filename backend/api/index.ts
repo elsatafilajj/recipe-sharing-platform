@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import recipeRoutes from './routes/recipeRoutes';
 import { VercelRequest, VercelResponse } from '@vercel/node';
+import multer from 'multer';
 
 // Load environment variables
 dotenv.config();
@@ -29,12 +30,15 @@ app.use(
         callback(new Error(`Origin ${origin} not allowed by CORS`));
       }
     },
-    methods: ['GET', 'POST', 'DELETE'], // Add other methods as needed
-    credentials: true, // Allow credentials (e.g., cookies, authorization headers)
+    methods: ['GET', 'POST', 'DELETE'],
+    credentials: true, // Allow credentials (cookies, etc.)
   })
 );
 
 app.use(express.json());
+
+// Initialize multer with memory storage (for Vercel)
+const upload = multer({ storage: multer.memoryStorage() });
 
 // API Routes
 app.use('/api', recipeRoutes);
