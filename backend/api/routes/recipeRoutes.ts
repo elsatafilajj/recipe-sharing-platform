@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import RecipeFactory from '../factories/recipeFactory';
-import { uploadImage } from '../../api/utils/cloudinary';
+import { uploadImage } from '../utils/cloudinary';
 import multer from 'multer';
 import fs from 'fs';
 
