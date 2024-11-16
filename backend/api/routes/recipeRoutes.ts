@@ -11,6 +11,14 @@ const prisma = new PrismaClient();
 // Use memory storage for file uploads
 const upload = multer({ storage: multer.memoryStorage() }).single('image');
 
+// Middleware to enable CORS for Vercel
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // You can restrict this to specific domains
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
+  next();
+});
+
 interface CreateRecipeRequest {
   title: string;
   content: string;
@@ -60,7 +68,7 @@ router.post('/recipes', upload, async (req: Request<{}, {}, CreateRecipeRequest>
   }
 });
 
-// Route for fetching all recipes 
+// Route for fetching all recipes
 router.get('/recipes', async (req: Request, res: Response): Promise<void> => {
   const { title, type, difficulty } = req.query;
 
@@ -80,7 +88,7 @@ router.get('/recipes', async (req: Request, res: Response): Promise<void> => {
 });
 
 // Route for fetching a recipe by ID
-router.get('recipes/:id', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+router.get('/recipes/:id', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params;
 
   try {
@@ -147,7 +155,7 @@ router.delete('/:id/favorite', async (req: Request<{ id: string }>, res: Respons
   }
 });
 
-//route for fetching users
+// Route for fetching users
 router.get('/users', async (req, res) => {
   try {
     const users = await prisma.user.findMany({
@@ -163,7 +171,5 @@ router.get('/users', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 });
-
-
 
 export default router;

@@ -5,6 +5,7 @@ import { FiXSquare } from "react-icons/fi";
 import { Label } from '@radix-ui/react-label';
 import * as Dialog from '@radix-ui/react-dialog'; // Radix UI Dialog components
 
+// Defining the structure of a Recipe
 interface Recipe {
   id: number;
   title: string;
@@ -15,19 +16,26 @@ interface Recipe {
   ingredients: string;
 }
 
+// Fetcher function for SWR to retrieve data from the backend
 const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 const RecipeList: React.FC = () => {
-  const { data: recipes, error } = useSWR('http://localhost:5000/api/recipes', fetcher);
+  // Use SWR to fetch recipes from the backend
+  const { data: recipes, error } = useSWR(
+    `${import.meta.env.VITE_API_URL}/recipes`, // Using environment variable
+    fetcher
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<number[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null); // Track the selected recipe
 
+  // Load favorites from localStorage when the component mounts
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavorites(savedFavorites);
   }, []);
 
+  // Handle adding/removing a recipe from favorites
   const handleFavorite = async (recipeId: number) => {
     const updatedFavorites = favorites.includes(recipeId)
       ? favorites.filter(id => id !== recipeId)
@@ -38,7 +46,7 @@ const RecipeList: React.FC = () => {
 
     try {
       if (!favorites.includes(recipeId)) {
-        await fetch(`http://localhost:5000/api/recipes/${recipeId}/favorite`, {
+        await fetch(`${import.meta.env.VITE_API_URL}/recipes/${recipeId}/favorite`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -46,7 +54,7 @@ const RecipeList: React.FC = () => {
           body: JSON.stringify({ userId: 1 }),
         });
       } else {
-        await fetch(`http://localhost:5000/api/recipes/${recipeId}/favorite`, {
+        await fetch(`${import.meta.env.VITE_API_URL}/recipes/${recipeId}/favorite`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
@@ -59,8 +67,9 @@ const RecipeList: React.FC = () => {
     }
   };
 
+  // Handle recipe click to open details in modal
   const handleRecipeClick = (recipe: Recipe) => {
-    setSelectedRecipe(recipe); // Open the modal with the selected recipe
+    setSelectedRecipe(recipe);
   };
 
   if (error) return <div>Error loading recipes</div>;
@@ -99,9 +108,7 @@ const RecipeList: React.FC = () => {
               )}
               <button
                 onClick={() => handleFavorite(recipe.id)}
-                className={`absolute top-2 right-2 text-2xl transition-colors duration-200 ${
-                  favorites.includes(recipe.id) ? 'text-red-500' : 'text-gray-400'
-                }`}
+                className={`absolute top-2 right-2 text-2xl transition-colors duration-200 ${favorites.includes(recipe.id) ? 'text-red-500' : 'text-gray-400'}`}
                 aria-label="Add to favorites"
               >
                 <FaHeart />
@@ -141,48 +148,12 @@ const RecipeList: React.FC = () => {
 
               {/* Modal Content */}
               <h2 className="text-3xl font-semibold mb-6 text-center">{selectedRecipe.title} Details</h2>
-              <div className="text-lg space-y-2">
-                <p className="font-semibold">Ingredients:</p>
-                <div>
-                  {selectedRecipe.ingredients
-                    .split('•')
-                    .map((ingredient, index) => {
-                      if (
-                        ingredient.includes('Preparation Time:') ||
-                        ingredient.includes('Cooking Time:') ||
-                        ingredient.includes('Total Time:')
-                      ) {
-                        return null;
-                      }
-                      return (
-                        <span key={index}>
-                          • {ingredient.trim()}
-                          {index !== selectedRecipe.ingredients.split('•').length - 1 && <br />}
-                        </span>
-                      );
-                    })}
-                </div>
-              </div>
-              <div className="mt-4 text-lg space-y-2">
-                <p className="font-semibold">Time Information:</p>
-                <div>
-                  {selectedRecipe.ingredients
-                    .split('•')
-                    .map((ingredient, index) => {
-                      if (
-                        ingredient.includes('Preparation Time:') ||
-                        ingredient.includes('Cooking Time:') ||
-                        ingredient.includes('Total Time:')
-                      ) {
-                        return (
-                          <span key={index} className="block">
-                            {ingredient.trim()}
-                          </span>
-                        );
-                      }
-                      return null;
-                    })}
-                </div>
+              <div className="text-lg space-y-4">
+                <p className="font-medium">Ingredients:</p>
+                <p>{selectedRecipe.ingredients}</p>
+
+                <p className="font-medium">Description:</p>
+                <p>{selectedRecipe.content}</p>
               </div>
             </Dialog.Content>
           </Dialog.Portal>
