@@ -1,6 +1,6 @@
 {
   "version": 2,
- "builds": [
+  "builds": [
     {
       "src": "backend/package.json",
       "use": "@vercel/node",
@@ -17,5 +17,8 @@
       "src": "/(.*)",
       "dest": "api/index.ts"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "postgresql://neondb_owner:KJ1A6FQrzeMq@ep-lingering-frost-a2aq1os6-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require"
+  }
 }
