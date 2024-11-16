@@ -1,29 +1,33 @@
 import React from 'react';
 import useSWR from 'swr';
 
-// The fetcher function that SWR will use to fetch data from the API
-const fetcher = (url: string) => fetch(`http://localhost:5000${url}`).then((res) => res.json());
-
+// Fetcher function to handle API requests
+const fetcher = (url: string) => {
+  // Use the environment variable for API URL, which is different based on local or production
+  const baseUrl = import.meta.env.VITE_API_URL;
+  return fetch(`${baseUrl}${url}`).then((res) => res.json());
+};
 
 const AboutUs: React.FC = () => {
- //fetch users from the backend
-  const { data: users, error } = useSWR('/api/users', fetcher);
-
+  // Fetch users from the backend
+  const { data: users, error } = useSWR('/users', fetcher);
 
   return (
     <div className="p-8 m-10">
+      {/* Hero section */}
       <div
         className="relative w-full h-96 bg-cover bg-center"
         style={{
           backgroundImage: 'url(/assets/about.us.jpg)',
         }}
       >
-        <div className="absolute inset-0 bg-black opacity-50"></div> 
+        <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="absolute inset-0 flex items-center justify-center text-center text-white px-4">
           <h1 className="text-5xl font-bold mb-4">About Us</h1>
         </div>
       </div>
 
+      {/* About Us Section */}
       <div className="mt-12 text-center">
         <h2 className="text-3xl font-bold text-gray-400 mb-6">Discover the passion behind our recipe-sharing platform.</h2>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -34,11 +38,11 @@ const AboutUs: React.FC = () => {
         </p>
       </div>
 
-      {/* Cards with different aspects of cooking */}
+      {/* Cards Section */}
       <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <img
-            src="/assets/img1.jpg" 
+            src="/assets/img1.jpg"
             alt="Cooking together"
             className="w-full h-64 object-cover"
           />
@@ -51,7 +55,7 @@ const AboutUs: React.FC = () => {
         </div>
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <img
-            src="/assets/img2.jpg" 
+            src="/assets/img2.jpg"
             alt="Delicious dishes"
             className="w-full h-64 object-cover"
           />
@@ -64,7 +68,7 @@ const AboutUs: React.FC = () => {
         </div>
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <img
-            src="/assets/img3.jpg" 
+            src="/assets/img3.jpg"
             alt="Fresh Ingredients"
             className="w-full h-64 object-cover"
           />
@@ -77,12 +81,12 @@ const AboutUs: React.FC = () => {
         </div>
       </div>
 
-      {/* the youtube link section */}
+      {/* YouTube Section */}
       <div className="mt-12 text-center">
         <h2 className="text-2xl font-bold text-gray-400 mb-4">Want to Learn More ?</h2>
         <p className="text-gray-600 mb-6">Subscribe to our YouTube channel for detailed recipes and more cooking inspiration!</p>
         <a
-          href="https://www.youtube.com/channel/your-channel-id" 
+          href="https://www.youtube.com/channel/your-channel-id"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-500 transition"
@@ -90,7 +94,6 @@ const AboutUs: React.FC = () => {
           Visit Our YouTube Channel
         </a>
       </div>
-
 
       {/* Fetch and Display Users */}
       <div className="mt-16 text-center">
