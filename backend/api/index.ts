@@ -18,7 +18,7 @@ const app = express();
 // Middleware
 const allowedOrigins = [
   'http://localhost:5173', // Development frontend
-  process.env.FRONTEND_URL || 'https://recipe-sharing-platform-hazel.vercel.app/', // Production frontend
+  'https://recipe-sharing-platform-hazel.vercel.app', // Vercel production frontend
 ];
 
 app.use(
@@ -27,6 +27,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error(`Origin ${origin} not allowed by CORS`);
         callback(new Error(`Origin ${origin} not allowed by CORS`));
       }
     },
