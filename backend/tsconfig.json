@@ -2,7 +2,7 @@
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "outDir": "./dist",           // Compile JavaScript files into the 'dist' directory
-    "rootDir": "api", 
+    "rootDir": "./api", 
 
     /* Projects */
     // "incremental": true,                              /* Save .tsbuildinfo files to allow for incremental compilation of projects. */

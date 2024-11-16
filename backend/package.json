@@ -4,7 +4,7 @@
   "main": "index.ts",
   "scripts": {
     "dev": "ts-node api/index.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "ts-node api/index.ts",
     "prisma:migrate": "prisma migrate deploy"
   },

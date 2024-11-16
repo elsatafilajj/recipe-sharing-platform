@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const client_1 = require("@prisma/client");
 const recipeFactory_1 = __importDefault(require("../factories/recipeFactory"));
-const cloudinary_1 = require("../utils/cloudinary");
+const cloudinary_1 = require("../../api/utils/cloudinary");
 const multer_1 = __importDefault(require("multer"));
 const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
