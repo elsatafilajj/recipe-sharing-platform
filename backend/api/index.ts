@@ -1,28 +1,54 @@
-import { VercelRequest, VercelResponse } from '@vercel/node';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
-import recipeRoutes from '../src/routes/recipeRoutes'; // Import routes from your existing src folder
+import recipeRoutes from './routes/recipeRoutes';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 
-dotenv.config(); // Loading environment variables
+// Load environment variables
+dotenv.config();
 
-const app = express();
+// Initialize Prisma Client
 const prisma = new PrismaClient();
 
+// Initialize Express app
+const app = express();
+
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Replace with your frontend URL
+    methods: ['GET', 'POST', 'DELETE'],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-// Define routes
-app.use('/api', recipeRoutes); // Mount your routes
+// API Routes
+app.use('/api', recipeRoutes);
 
-// Simple hello world route
-app.get('/', (req, res) => {
+// Default route for testing
+app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the Recipe Sharing Platform API');
 });
 
-// Vercel specific wrapper for Express
-export default (req: VercelRequest, res: VercelResponse) => {
-  app(req, res);  // Pass the request and response to the Express app
+// Vercel handler
+const vercelHandler = (req: VercelRequest, res: VercelResponse) => {
+  if (req.method === 'GET' && req.url === '/') {
+    return res.status(200).json({ message: 'Hello from the API!' });
+  }
+
+  // Delegate all requests to Express
+  app(req as any, res as any);
 };
+
+// Export for Vercel deployment
+export default vercelHandler;
+
+// Start server locally (for development only)
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
