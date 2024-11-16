@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { cloudName, uploadPreset } from './cloudinaryConfig';
 
 interface Recipe {
   id: number;
@@ -35,7 +34,6 @@ const ShareRecipe: React.FC = () => {
       alert('Please fill in all fields');
       return;
     }
-    
 
     const formData = new FormData();
     formData.append('title', title);
@@ -50,21 +48,15 @@ const ShareRecipe: React.FC = () => {
       // Upload the image to Cloudinary
       const cloudinaryFormData = new FormData();
       cloudinaryFormData.append('file', image);
-      cloudinaryFormData.append('upload_preset', uploadPreset); // Use the upload preset from env
+      cloudinaryFormData.append('upload_preset', import.meta.env.VITE_UPLOAD_PRESET); // Use the upload preset from env
       try {
         const cloudinaryResponse = await axios.post(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUD_NAME}/image/upload`,
           cloudinaryFormData
         );
         
-        // Log the full response to see everything Cloudinary returns
-        console.log('Cloudinary response:', cloudinaryResponse.data);
-        
         // Get the image URL from the response
         imageUrl = cloudinaryResponse.data.secure_url;
-        
-        // Log just the image URL
-        console.log('Image URL from Cloudinary:', imageUrl);
         
         formData.append('imageUrl', imageUrl);
         
@@ -77,7 +69,7 @@ const ShareRecipe: React.FC = () => {
 
     try {
       // Send POST request to backend to create the new recipe
-      const response = await fetch('http://localhost:5000/api/recipes', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/recipes`, {
         method: 'POST',
         body: formData,
       });
@@ -106,80 +98,101 @@ const ShareRecipe: React.FC = () => {
     }
   };
 
-  // Handle recipe deletion
+  // Handle deleting a recipe
   const handleDelete = (id: number) => {
-    const updatedRecipes = recipes.filter((recipe) => recipe.id !== id);
+    const updatedRecipes = recipes.filter(recipe => recipe.id !== id);
     setRecipes(updatedRecipes);
     localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+    console.log(`Recipe with id ${id} deleted`);
   };
-  console.log('Cloud Name:', import.meta.env.VITE_CLOUD_NAME);
-  console.log('Upload Preset:', import.meta.env.VITE_UPLOAD_PRESET);
-  
+
   return (
-    <div className="p-9 m-9 bg-gradient-to-r from-yellow-100 to-orange-100 shadow-lg rounded-xl">
-      <h2 className="text-2xl text-black font-bold mb-4">Add New Recipe</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Recipe Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <textarea
-          placeholder="Recipe Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <textarea
-          placeholder="Ingredients"
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <input
-          type="file"
-          onChange={(e) => setImage(e.target.files?.[0] || null)}
-          className="w-full mb-4 p-2 border rounded"
-        />
-        <button type="submit" className="bg-yellow-500 text-white hover:bg-orange-500 px-6 py-2 rounded">
-          Submit Recipe
+    <div className="p-8 bg-gradient-to-r from-orange-100 via-orange-200 to-yellow-100 min-h-screen">
+      <h1 className="text-4xl font-semibold text-center mb-8 text-orange-600 drop-shadow-lg">Share Your Recipe</h1>
+
+      {/* Recipe Form */}
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-lg mx-auto bg-white p-8 rounded-xl shadow-xl transition-all duration-300 hover:shadow-2xl">
+        <div className="space-y-4">
+          <label htmlFor="title" className="block text-lg font-medium text-gray-700">
+            Recipe Title
+          </label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-orange-500 transition duration-300 ease-in-out hover:bg-orange-50"
+            required
+          />
+        </div>
+
+        <div className="space-y-4">
+          <label htmlFor="content" className="block text-lg font-medium text-gray-700">
+            Recipe Content
+          </label>
+          <textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-orange-500 transition duration-300 ease-in-out hover:bg-orange-50"
+            required
+          />
+        </div>
+
+        <div className="space-y-4">
+          <label htmlFor="ingredients" className="block text-lg font-medium text-gray-700">
+            Ingredients
+          </label>
+          <textarea
+            id="ingredients"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-orange-500 transition duration-300 ease-in-out hover:bg-orange-50"
+            required
+          />
+        </div>
+
+        <div className="space-y-4">
+          <label htmlFor="image" className="block text-lg font-medium text-gray-700">
+            Recipe Image
+          </label>
+          <input
+            type="file"
+            id="image"
+            onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+            className="w-full border border-gray-300 rounded-lg shadow-sm transition duration-300 ease-in-out hover:bg-gray-50"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-400 focus:ring-4 focus:ring-orange-200 transition-all duration-300"
+        >
+          Share Recipe
         </button>
       </form>
 
-      {/* Display Recipes in a new section */}
-      <div className="mt-12">
-        <h3 className="text-2xl font-bold text-center text-black mb-6">Recipes</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {recipes.length > 0 ? (
-            recipes.map((recipe) => (
-              <div
-                key={recipe.id}
-                className="bg-white shadow-lg rounded-lg p-6 mb-4 transition-transform transform hover:scale-105"
+      {/* Recipe List */}
+      <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        {recipes.map((recipe) => (
+          <div key={recipe.id} className="bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+            <img
+              src={recipe.imageUrl || '/assets/default-image.jpg'}
+              alt={recipe.title}
+              className="w-full h-56 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-semibold text-gray-800">{recipe.title}</h3>
+              <p className="text-gray-600 mt-2">{recipe.content}</p>
+              <button
+                onClick={() => handleDelete(recipe.id)}
+                className="mt-4 bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-400 transition-all duration-300"
               >
-                <h4 className="text-xl font-semibold text-gray-800 mb-2">{recipe.title}</h4>
-                <p className="text-gray-600 mb-2">{recipe.content}</p>
-                <p className="text-gray-600 mb-2">{recipe.ingredients}</p>
-                {recipe.imageUrl && (
-                  <img
-                    src={recipe.imageUrl}
-                    alt={recipe.title}
-                    className="w-full h-48 object-cover rounded-lg mb-4"
-                  />
-                )}
-                <button
-                  onClick={() => handleDelete(recipe.id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Delete Recipe
-                </button>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-500">No recipes added yet.</p>
-          )}
-        </div>
+                Delete
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
