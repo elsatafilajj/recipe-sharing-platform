@@ -87,6 +87,44 @@ router.get('/recipes', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
+// Route for updating a recipe by ID
+router.put('/recipes/:id', upload, async (req: Request<{ id: string }, {}, Partial<CreateRecipeRequest>>, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const { title, content, type, userId, ingredients } = req.body;
+
+  try {
+    const recipe = await prisma.recipe.findUnique({ where: { id: Number(id) } });
+
+    if (!recipe) {
+      res.status(404).json({ error: 'Recipe not found' });
+      return;
+    }
+
+    // Handle image update if a new file is provided
+    let imageUrl = recipe.imageUrl;
+    if (req.file) {
+      imageUrl = await handleImageUpload(req.file.buffer, req.file.originalname);
+    }
+
+    const updatedRecipe = await prisma.recipe.update({
+      where: { id: Number(id) },
+      data: {
+        title: title ?? recipe.title,
+        content: content ?? recipe.content,
+
+        imageUrl,
+        ingredients: ingredients ?? recipe.ingredients,
+      },
+    });
+
+    res.status(200).json(updatedRecipe);
+  } catch (error) {
+    console.error('Error updating recipe:', error);
+    res.status(500).json({ error: 'An error occurred while updating the recipe', details: error });
+  }
+});
+
+
 // Route for fetching a recipe by ID
 router.get('/recipes/:id', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params;
@@ -105,6 +143,8 @@ router.get('/recipes/:id', async (req: Request<{ id: string }>, res: Response): 
     res.status(500).json({ error: 'An error occurred while fetching the recipe', details: error });
   }
 });
+
+
 
 // Route for deleting a recipe by ID
 router.delete('/recipes/:id', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
