@@ -84,13 +84,13 @@ const RecipeList: React.FC = () => {
       <h2 className="text-4xl font-bold text-center text-black mb-8">
         Get Inspired for your next meal
       </h2>
-      <Label className="block mb-2 text-lg font-semibold text-gray-700"></Label>
+      <Label className="block mb-2 text-lg font-semibold  text-gray-700"></Label>
       <input
         type="text"
         placeholder="Search recipes..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"
+        className="w-full p-3 mb-6 border transition duration-300 ease-in-out transform hover:scale-105 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-200"
       />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredRecipes.map((recipe: Recipe) => (
@@ -145,15 +145,50 @@ const RecipeList: React.FC = () => {
                   <FiXSquare />
                 </button>
               </Dialog.Close>
-
               {/* Modal Content */}
               <h2 className="text-3xl font-semibold mb-6 text-center">{selectedRecipe.title} Details</h2>
-              <div className="text-lg space-y-4">
-                <p className="font-medium">Ingredients:</p>
-                <p>{selectedRecipe.ingredients}</p>
-
-                <p className="font-medium">Description:</p>
-                <p>{selectedRecipe.content}</p>
+              <div className="text-lg space-y-2">
+                <p className="font-semibold">Ingredients:</p>
+                <div>
+                  {selectedRecipe.ingredients
+                    .split('•')
+                    .map((ingredient, index) => {
+                      if (
+                        ingredient.includes('Preparation Time:') ||
+                        ingredient.includes('Cooking Time:') ||
+                        ingredient.includes('Total Time:')
+                      ) {
+                        return null;
+                      }
+                      return (
+                        <span key={index}>
+                          • {ingredient.trim()}
+                          {index !== selectedRecipe.ingredients.split('•').length - 1 && <br />}
+                        </span>
+                      );
+                    })}
+                </div>
+              </div>
+              <div className="mt-4 text-lg space-y-2">
+                <p className="font-semibold">Time Information:</p>
+                <div>
+                  {selectedRecipe.ingredients
+                    .split('•')
+                    .map((ingredient, index) => {
+                      if (
+                        ingredient.includes('Preparation Time:') ||
+                        ingredient.includes('Cooking Time:') ||
+                        ingredient.includes('Total Time:')
+                      ) {
+                        return (
+                          <span key={index} className="block">
+                            {ingredient.trim()}
+                          </span>
+                        );
+                      }
+                      return null;
+                    })}
+                </div>
               </div>
             </Dialog.Content>
           </Dialog.Portal>

@@ -8,7 +8,7 @@ interface RecipeCardProps {
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ title, imageUrl }) => {
   return (
-    <div className="bg-white border w-full border-gray-200 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl">
+    <div className="bg-white border transition duration-300 ease-in-out transform hover:scale-105 w-full border-gray-200 rounded-lg overflow-hidden shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-xl">
       <img src={imageUrl} alt={title} className="w-full h-56 object-cover" />
       <div className="p-5 w-full">
         <h2 className="font-semibold text-2xl text-gray-800 mb-3">{title}</h2>
