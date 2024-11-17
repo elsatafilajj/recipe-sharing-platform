@@ -2,7 +2,9 @@
 
 The **Recipe Sharing Platform** is a full-stack application that enables users to share, browse, and save recipes with ease. The frontend, built with **React.js** and **Vite**, provides an intuitive user interface. The backend, developed with **Node.js** and **Express**, connects to a **PostgreSQL** database hosted on **NeonDB** for data management, while **Cloudinary** handles image storage for recipes. This setup ensures a seamless and efficient experience for users.
 
-Live : [https://recipe-sharing-platform-hazel.vercel.app/]
+Live: [https://recipe-sharing-platform-hazel.vercel.app/]
+
+
 ---
 
 ## **Table of Contents**
