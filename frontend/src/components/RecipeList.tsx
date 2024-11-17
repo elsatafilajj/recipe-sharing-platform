@@ -53,7 +53,7 @@ const RecipeList: React.FC = () => {
       const method = favorites.includes(recipeId) ? 'DELETE' : 'POST';
   
       // Fetch API call with dynamic URL
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/${recipeId}/favorite`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/${recipeId}/favorite`, {
         method: method,
         headers: {
           'Content-Type': 'application/json',
