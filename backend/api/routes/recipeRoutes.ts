@@ -105,8 +105,30 @@ router.get('/recipes/:id', async (req: Request<{ id: string }>, res: Response): 
     res.status(500).json({ error: 'An error occurred while fetching the recipe', details: error });
   }
 });
+// Route for deleting a recipe by ID
+router.delete('/recipes/:id', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+  const { id } = req.params;
 
-// Route for adding a favorite
+  try {
+    // Delete the recipe from the database
+    const deletedRecipe = await prisma.recipe.delete({
+      where: { id: Number(id) },
+    });
+
+    if (!deletedRecipe) {
+      res.status(404).json({ error: 'Recipe not found' });
+      return;
+    }
+
+    // Respond with a success message
+    res.status(200).json({ message: 'Recipe deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting recipe:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the recipe', details: error });
+  }
+});
+
+
 // Route for adding a favorite
 router.post('/api/:id/favorite', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params; // Recipe ID
@@ -184,9 +206,6 @@ router.delete('/api/:id/favorite', async (req: Request<{ id: string }>, res: Res
   }
 });
 
-
-
-  
 
 
 // Route for fetching users

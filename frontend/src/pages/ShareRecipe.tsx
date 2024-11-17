@@ -99,11 +99,27 @@ const ShareRecipe: React.FC = () => {
   };
 
   // Handle deleting a recipe
-  const handleDelete = (id: number) => {
-    const updatedRecipes = recipes.filter(recipe => recipe.id !== id);
-    setRecipes(updatedRecipes);
-    localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
-    console.log(`Recipe with id ${id} deleted`);
+  const handleDelete = async (id: number) => {
+    // Send DELETE request to backend to delete the recipe
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/recipes/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete recipe');
+      }
+
+      // Update state with the remaining recipes
+      const updatedRecipes = recipes.filter(recipe => recipe.id !== id);
+      setRecipes(updatedRecipes);
+
+      // Remove the deleted recipe from localStorage
+      localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+      console.log(`Recipe with id ${id} deleted successfully`);
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+    }
   };
 
   return (
