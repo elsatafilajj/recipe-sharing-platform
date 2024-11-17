@@ -107,20 +107,39 @@ router.get('/recipes/:id', async (req: Request<{ id: string }>, res: Response): 
 });
 
 // Route for adding a favorite
-router.post('/:id/favorite', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
-  const { id } = req.params;
-  const { userId } = req.body;
+// Route for adding a favorite
+router.post('/api/:id/favorite', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+  const { id } = req.params; // Recipe ID
+  const { userId } = req.body; // User ID from the request body
+
+  if (!userId) {
+    res.status(400).json({ error: 'User ID is required' });
+    return;
+  }
 
   try {
+    // Check if the recipe exists
+    const recipe = await prisma.recipe.findUnique({ where: { id: Number(id) } });
+    if (!recipe) {
+      return ;
+    }
+
+    // Check if the user exists
+    const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+    if (!user) {
+      return ;
+    }
+
+    // Check if the recipe is already in the user's favorites
     const existingFavorite = await prisma.favorite.findFirst({
       where: { recipeId: Number(id), userId: Number(userId) },
     });
 
     if (existingFavorite) {
-      res.status(400).json({ error: 'Recipe already in favorites' });
-      return;
+      return ;
     }
 
+    // Create the new favorite entry
     const favorite = await prisma.favorite.create({
       data: {
         recipeId: Number(id),
@@ -136,17 +155,27 @@ router.post('/:id/favorite', async (req: Request<{ id: string }>, res: Response)
 });
 
 // Route for removing a favorite
-router.delete('/:id/favorite', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
+router.delete('/api/:id/favorite', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params;
   const { userId } = req.body;
 
+  if (!userId) {
+    res.status(400).json({ error: 'User ID is required' });
+    return;
+  }
+
   try {
-    await prisma.favorite.deleteMany({
+    // Remove the favorite entry from the database
+    const deletedFavorite = await prisma.favorite.deleteMany({
       where: {
         recipeId: Number(id),
         userId: Number(userId),
       },
     });
+
+    if (deletedFavorite.count === 0) {
+      return;
+    }
 
     res.status(200).json({ message: 'Recipe removed from favorites' });
   } catch (error) {
@@ -154,6 +183,11 @@ router.delete('/:id/favorite', async (req: Request<{ id: string }>, res: Respons
     res.status(500).json({ error: 'An error occurred while removing from favorites', details: error });
   }
 });
+
+
+
+  
+
 
 // Route for fetching users
 router.get('/users', async (req, res) => {

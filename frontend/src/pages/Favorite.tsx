@@ -11,13 +11,11 @@ interface Recipe {
   difficulty: string;
 }
 
-// Fetcher function to handle API requests
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Favorite: React.FC = () => {
   const [favorites, setFavorites] = useState<number[]>([]);
 
-  // Use environment variable for API URL
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';  // Default to local URL if not set
   const { data: recipes, error } = useSWR<Recipe[]>(`${apiUrl}/recipes`, fetcher);
 
@@ -26,7 +24,6 @@ const Favorite: React.FC = () => {
     setFavorites(savedFavorites);
   }, []);
 
-  // Function to remove a recipe from the list of favorites
   const removeFavorite = async (recipeId: number) => {
     const updatedFavorites = favorites.filter(id => id !== recipeId);
     setFavorites(updatedFavorites);
@@ -45,7 +42,6 @@ const Favorite: React.FC = () => {
     }
   };
 
-  // Filter the recipes to only include those in the favorites list
   const favoriteRecipes = recipes?.filter(recipe => favorites.includes(recipe.id)) || [];
 
   if (error) return <div>Error fetching recipes.</div>;
@@ -64,13 +60,7 @@ const Favorite: React.FC = () => {
               className="bg-white shadow-lg rounded-xl overflow-hidden flex flex-col transition transform hover:scale-105"
             >
               <div className="relative">
-                {recipe.imageUrl && (
-                  <img
-                    src={recipe.imageUrl}
-                    alt={recipe.title}
-                    className="w-full h-48 object-cover"
-                  />
-                )}
+                {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.title} className="w-full h-48 object-cover" />}
                 <button
                   onClick={() => removeFavorite(recipe.id)}
                   className="absolute top-2 right-2 text-xl text-gray-500 hover:text-red-500"
@@ -81,7 +71,7 @@ const Favorite: React.FC = () => {
               </div>
               <div className="p-4 flex flex-col flex-grow">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">{recipe.title}</h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">{recipe.content}</p>
+                <p className="text-gray-600 text-sm mb-4">{recipe.content}</p>
                 <div className="mt-auto flex justify-between items-center">
                   <span className="text-sm font-medium text-orange-500">{recipe.type}</span>
                   <span className="text-sm text-gray-500">{recipe.difficulty}</span>
@@ -90,7 +80,7 @@ const Favorite: React.FC = () => {
             </div>
           ))
         ) : (
-          <p>No favorite recipes yet. Go back and add some!</p>
+          <div className="col-span-full text-center text-gray-600">No favorite recipes yet.</div>
         )}
       </div>
     </div>

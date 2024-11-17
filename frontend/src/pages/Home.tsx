@@ -43,7 +43,7 @@ const Home: React.FC = () => {
         )}
 
         {recipes && (
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col transition duration-300 ease-in-out transform hover:scale-105 items-center">
             <div className="w-full max-w-4xl mx-auto overflow-hidden shadow-lg">
               <img
                 src={recipes[currentIndex]?.imageUrl || '/default-image.jpg'} // Fallback image
@@ -54,7 +54,7 @@ const Home: React.FC = () => {
 
             {/* Radix Slider for navigating images */}
             <RadixSlider.Root
-              className="w-full max-w-5xl mt-4"
+              className="w-full  max-w-5xl mt-4"
               min={0}
               max={recipes.length - 1}
               step={1}

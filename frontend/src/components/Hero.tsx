@@ -20,7 +20,7 @@ const Hero: React.FC = () => {
       }}
     >
 
-      <h1 className="text-6xl md:text-7xl font-extrabold mb-6 text-white drop-shadow-lg">
+      <h1 className="text-6xl   md:text-7xl font-extrabold mb-6 text-white drop-shadow-lg">
         Connect with our{' '}
         <span className="text-[#F7B731]">cooking</span> community
       </h1>

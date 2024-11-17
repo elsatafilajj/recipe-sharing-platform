@@ -16,7 +16,7 @@ const AboutUs: React.FC = () => {
     <div className="p-8 m-10">
       {/* Hero section */}
       <div
-        className="relative w-full h-96 bg-cover bg-center"
+        className="relative transition duration-300 ease-in-out transform hover:scale-105 w-full h-96 bg-cover bg-center"
         style={{
           backgroundImage: 'url(/assets/about.us.jpg)',
         }}
@@ -40,20 +40,20 @@ const AboutUs: React.FC = () => {
 
       {/* Cards Section */}
       <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white transition duration-300 ease-in-out transform hover:scale-105 rounded-lg shadow-lg overflow-hidden">
           <img
             src="/assets/img1.jpg"
             alt="Cooking together"
             className="w-full h-64 object-cover"
           />
-          <div className="p-4">
+          <div className="p-4 ">
             <h3 className="text-xl font-semibold text-gray-800">Cooking Together</h3>
             <p className="text-gray-600 mt-2">
               Share your family recipes or discover new ones created by fellow cooking enthusiasts from around the world.
             </p>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white transition duration-300 ease-in-out transform hover:scale-105 rounded-lg shadow-lg overflow-hidden">
           <img
             src="/assets/img2.jpg"
             alt="Delicious dishes"
@@ -66,7 +66,7 @@ const AboutUs: React.FC = () => {
             </p>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-white transition duration-300 ease-in-out transform hover:scale-105 rounded-lg shadow-lg overflow-hidden">
           <img
             src="/assets/img3.jpg"
             alt="Fresh Ingredients"
@@ -103,7 +103,7 @@ const AboutUs: React.FC = () => {
         {users && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
             {users.map((user: { id: number; name: string; email: string }) => (
-              <div key={user.id} className="bg-white rounded-lg shadow-lg p-4">
+              <div key={user.id} className="bg-white transition duration-300 ease-in-out transform hover:scale-105 rounded-lg shadow-lg p-4">
                 <h3 className="text-xl font-semibold text-gray-800">{user.name}</h3>
                 <p className="text-gray-600 mt-2">{user.email}</p>
               </div>

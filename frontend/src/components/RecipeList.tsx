@@ -40,32 +40,35 @@ const RecipeList: React.FC = () => {
     const updatedFavorites = favorites.includes(recipeId)
       ? favorites.filter(id => id !== recipeId)
       : [...favorites, recipeId];
-
+  
+    // Update local state
     setFavorites(updatedFavorites);
+    // Sync with localStorage
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-
+  
     try {
-      if (!favorites.includes(recipeId)) {
-        await fetch(`${import.meta.env.VITE_API_URL}/recipes/${recipeId}/favorite`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId: 1 }),
-        });
-      } else {
-        await fetch(`${import.meta.env.VITE_API_URL}/recipes/${recipeId}/favorite`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId: 1 }),
-        });
+      const userId = 1; // Replace with actual logged-in user ID in production
+  
+      // Determine the correct method for the request (POST or DELETE)
+      const method = favorites.includes(recipeId) ? 'DELETE' : 'POST';
+  
+      // Fetch API call with dynamic URL
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/${recipeId}/favorite`, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }), // Pass the user ID in the request body
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update favorite');
       }
     } catch (error) {
       console.error('Error updating favorite:', error);
     }
   };
+  
 
   // Handle recipe click to open details in modal
   const handleRecipeClick = (recipe: Recipe) => {
