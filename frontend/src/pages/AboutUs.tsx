@@ -3,7 +3,6 @@ import useSWR from 'swr';
 
 // Fetcher function to handle API requests
 const fetcher = (url: string) => {
-  // Use the environment variable for API URL
   const baseUrl = import.meta.env.VITE_API_URL;
   return fetch(`${baseUrl}${url}`).then((res) => res.json());
 };

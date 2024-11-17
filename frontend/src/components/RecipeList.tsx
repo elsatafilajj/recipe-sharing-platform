@@ -22,14 +22,13 @@ const fetcher = (url: string) => fetch(url).then(res => res.json());
 const RecipeList: React.FC = () => {
   // Use SWR to fetch recipes from the backend
   const { data: recipes, error } = useSWR(
-    `${import.meta.env.VITE_API_URL}/recipes`, // Using environment variable
+    `${import.meta.env.VITE_API_URL}/recipes`, 
     fetcher
   );
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<number[]>([]);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null); // Track the selected recipe
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null); 
 
-  // Load favorites from localStorage when the component mounts
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavorites(savedFavorites);
@@ -41,15 +40,14 @@ const RecipeList: React.FC = () => {
       ? favorites.filter(id => id !== recipeId)
       : [...favorites, recipeId];
   
-    // Update local state
+    
     setFavorites(updatedFavorites);
-    // Sync with localStorage
+   
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
   
     try {
-      const userId = 1; // Replace with actual logged-in user ID in production
+      const userId = 1; 
   
-      // Determine the correct method for the request (POST or DELETE)
       const method = favorites.includes(recipeId) ? 'DELETE' : 'POST';
   
       // Fetch API call with dynamic URL
@@ -58,7 +56,7 @@ const RecipeList: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userId }), // Pass the user ID in the request body
+        body: JSON.stringify({ userId }), 
       });
   
       if (!response.ok) {

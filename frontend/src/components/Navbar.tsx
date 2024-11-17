@@ -1,9 +1,10 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-
 //This component provides the main navigation bar for the application.
 //The navigation bar includes links to Home, Recipes, Favorites, About Us, and Share Recipe pages.
- //Accessibility is enhanced by specifying aria-labels for assistive technologies.
+//Accessibility is enhanced by specifying aria-labels for assistive technologies.
+
+ import React from 'react';
+import { NavLink } from 'react-router-dom';
+
 
 const Navbar: React.FC = () => {
 

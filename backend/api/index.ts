@@ -17,8 +17,8 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-  'http://localhost:5173', // Development frontend
-  'https://recipe-sharing-platform-hazel.vercel.app', // Vercel production frontend
+  'http://localhost:5173', 
+  'https://recipe-sharing-platform-hazel.vercel.app', 
 ];
 
 app.use(
@@ -32,19 +32,17 @@ app.use(
       }
     },
     methods: ['GET', 'POST', 'DELETE'],
-    credentials: true, // Allow credentials (cookies, etc.)
+    credentials: true, 
   })
 );
 
 app.use(express.json());
 
-// Initialize multer with memory storage (for Vercel)
+// Initialize multer with memory storage 
 const upload = multer({ storage: multer.memoryStorage() });
 
-// API Routes
 app.use('/api', recipeRoutes);
 
-// Default route for testing
 app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the Recipe Sharing Platform API');
 });
@@ -59,10 +57,10 @@ const vercelHandler = (req: VercelRequest, res: VercelResponse) => {
   app(req as any, res as any);
 };
 
-// Export for Vercel deployment
+
 export default vercelHandler;
 
-// Start server locally (for development only)
+// Start server locally 
 if (process.env.NODE_ENV !== 'production') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {

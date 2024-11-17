@@ -7,7 +7,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Home: React.FC = () => {
   const { data: recipes, error, isLoading } = useSWR(
-    `${import.meta.env.VITE_API_URL}/recipes`, // Using environment variable for the base URL
+    `${import.meta.env.VITE_API_URL}/recipes`, 
     fetcher
   );
 

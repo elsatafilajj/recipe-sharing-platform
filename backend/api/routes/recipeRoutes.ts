@@ -13,7 +13,7 @@ const upload = multer({ storage: multer.memoryStorage() }).single('image');
 
 // Middleware to enable CORS for Vercel
 router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*'); // You can restrict this to specific domains
+  res.header('Access-Control-Allow-Origin', '*'); 
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT');
   next();
@@ -31,8 +31,8 @@ interface CreateRecipeRequest {
 // Helper function to handle image uploads
 const handleImageUpload = async (fileBuffer: Buffer, fileName: string): Promise<string> => {
   try {
-    const result = await uploadImage(fileBuffer, fileName); // Upload the image to Cloudinary
-    return result.secure_url; // Return the secure URL of the uploaded image
+    const result = await uploadImage(fileBuffer, fileName); 
+    return result.secure_url; 
   } catch (error) {
     throw new Error('Error uploading image: ' + error);
   }
@@ -105,12 +105,12 @@ router.get('/recipes/:id', async (req: Request<{ id: string }>, res: Response): 
     res.status(500).json({ error: 'An error occurred while fetching the recipe', details: error });
   }
 });
+
 // Route for deleting a recipe by ID
 router.delete('/recipes/:id', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params;
 
   try {
-    // Delete the recipe from the database
     const deletedRecipe = await prisma.recipe.delete({
       where: { id: Number(id) },
     });
@@ -119,8 +119,6 @@ router.delete('/recipes/:id', async (req: Request<{ id: string }>, res: Response
       res.status(404).json({ error: 'Recipe not found' });
       return;
     }
-
-    // Respond with a success message
     res.status(200).json({ message: 'Recipe deleted successfully' });
   } catch (error) {
     console.error('Error deleting recipe:', error);
@@ -129,7 +127,7 @@ router.delete('/recipes/:id', async (req: Request<{ id: string }>, res: Response
 });
 
 
-// Route for adding a favorite
+// Route for adding a recipe as a favorite
 router.post('/api/:id/favorite', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params; // Recipe ID
   const { userId } = req.body; // User ID from the request body
@@ -140,19 +138,16 @@ router.post('/api/:id/favorite', async (req: Request<{ id: string }>, res: Respo
   }
 
   try {
-    // Check if the recipe exists
     const recipe = await prisma.recipe.findUnique({ where: { id: Number(id) } });
     if (!recipe) {
       return ;
     }
 
-    // Check if the user exists
     const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
     if (!user) {
       return ;
     }
 
-    // Check if the recipe is already in the user's favorites
     const existingFavorite = await prisma.favorite.findFirst({
       where: { recipeId: Number(id), userId: Number(userId) },
     });
@@ -161,7 +156,6 @@ router.post('/api/:id/favorite', async (req: Request<{ id: string }>, res: Respo
       return ;
     }
 
-    // Create the new favorite entry
     const favorite = await prisma.favorite.create({
       data: {
         recipeId: Number(id),
@@ -176,7 +170,7 @@ router.post('/api/:id/favorite', async (req: Request<{ id: string }>, res: Respo
   }
 });
 
-// Route for removing a favorite
+// Route for removing a recipe from favorite
 router.delete('/api/:id/favorite', async (req: Request<{ id: string }>, res: Response): Promise<void> => {
   const { id } = req.params;
   const { userId } = req.body;
@@ -187,7 +181,6 @@ router.delete('/api/:id/favorite', async (req: Request<{ id: string }>, res: Res
   }
 
   try {
-    // Remove the favorite entry from the database
     const deletedFavorite = await prisma.favorite.deleteMany({
       where: {
         recipeId: Number(id),
@@ -205,7 +198,6 @@ router.delete('/api/:id/favorite', async (req: Request<{ id: string }>, res: Res
     res.status(500).json({ error: 'An error occurred while removing from favorites', details: error });
   }
 });
-
 
 
 // Route for fetching users

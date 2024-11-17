@@ -36,7 +36,7 @@ const uploadImage = async (fileBuffer: Buffer, fileName: string): Promise<Cloudi
     cloudinary.uploader.upload_stream(
       {
         public_id: fileName,
-        resource_type: 'auto', // automatically detect image type
+        resource_type: 'auto', 
       },
       (error, result) => {
         if (error) {
@@ -44,17 +44,17 @@ const uploadImage = async (fileBuffer: Buffer, fileName: string): Promise<Cloudi
         } else if (!result) {
           reject(new Error("Upload result is undefined."));
         } else {
-          resolve(result as CloudinaryUploadResult); // Resolve the promise with the upload result
+          resolve(result as CloudinaryUploadResult); 
         }
       }
-    ).end(fileBuffer); // Stream the file buffer to Cloudinary
+    ).end(fileBuffer); 
   });
 };
 
-// Folder path where the recipe images are stored (for local use only)
+// Folder path where the recipe images are stored
 const folderPath = path.join('C:\\', 'Users', 'PULSE Electronics', 'Desktop', 'recipe-images');
 
-// Function to upload images from the folder to Cloudinary (for local development only)
+// Function to upload images from the folder to Cloudinary 
 const uploadImagesFromFolder = async (folderPath: string) => {
   try {
     const files = fs.readdirSync(folderPath); // Read all files in the folder
@@ -92,7 +92,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
 }).single('image');
 
-// Initialize Express app
+
 const app = express();
 
 // Check environment (Vercel or Local)
@@ -107,17 +107,16 @@ if (!isVercel) {
     try {
       if (!req.file) {
         res.status(400).send('No file uploaded');
-        return; // Ensure the function exits after sending a response
+        return; 
       }
-      const cloudinaryUrl = await uploadImageFromRequest(req.file); // Handle image upload
-      res.status(200).json({ url: cloudinaryUrl }); // Respond with the uploaded image URL
+      const cloudinaryUrl = await uploadImageFromRequest(req.file); 
+      res.status(200).json({ url: cloudinaryUrl }); 
     } catch (error) {
       res.status(500).send('Error uploading image.');
     }
   });
 }
 
-// Start the Express server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

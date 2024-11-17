@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FiXSquare } from "react-icons/fi";
 import useSWR from 'swr';
 
+// Define the Recipe interface
 interface Recipe {
   id: number;
   title: string;
@@ -11,19 +12,22 @@ interface Recipe {
   difficulty: string;
 }
 
+// Fetcher function for SWR to fetch data from API
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 const Favorite: React.FC = () => {
-  const [favorites, setFavorites] = useState<number[]>([]);
+  const [favorites, setFavorites] = useState<number[]>([]); // State to store IDs of favorite recipes
 
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';  // Default to local URL if not set
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';  
   const { data: recipes, error } = useSWR<Recipe[]>(`${apiUrl}/recipes`, fetcher);
 
+  // Load favorite recipe IDs from localStorage on component mount
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavorites(savedFavorites);
   }, []);
 
+   // Function to remove a recipe from favorites
   const removeFavorite = async (recipeId: number) => {
     const updatedFavorites = favorites.filter(id => id !== recipeId);
     setFavorites(updatedFavorites);
@@ -42,6 +46,7 @@ const Favorite: React.FC = () => {
     }
   };
 
+   // Filter recipes to only show the ones marked as favorites
   const favoriteRecipes = recipes?.filter(recipe => favorites.includes(recipe.id)) || [];
 
   if (error) return <div>Error fetching recipes.</div>;
